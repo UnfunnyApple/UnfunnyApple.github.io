@@ -7,28 +7,23 @@
 // Model URL from Teachable Machine
 //**************************************************
 //* as before, paste your lnk below
-let URL = "https://teachablemachine.withgoogle.com/models/6KnLhIs_s/";
+let URL = "https://teachablemachine.withgoogle.com/models/mQlyUbhFo/";
 
 
 
 
 let model, webcam, ctx, labelContainer, maxPredictions;
 
-// Dynamic pose tracking
 let poseStates = {};
 let explosionActive = false;
 let explosionSound = new Audio('explsn.mp3');
 
 function setModelURL(url) {
     URL = url;
-    // Reset states when URL changes
     poseStates = {};
     explosionActive = false;
 }
 
-/**
- * Initialize the application
- */
 async function init() {
     const modelURL = URL + "model.json";
     const metadataURL = URL + "metadata.json";
@@ -84,7 +79,6 @@ async function predict() {
                 prediction[i].className + ": " + prediction[i].probability.toFixed(2);
             labelContainer.childNodes[i].innerHTML = classPrediction;
 
-            // Check pose dynamically
             checkPose(prediction[i], video);
         }
 
@@ -98,7 +92,6 @@ function checkPose(prediction, video) {
     const time = video.currentTime;
     const prob = prediction.probability;
 
-    // Only respond to pose1 through pose5 labels
     const poseNumber = prediction.className.toLowerCase().replace(/[^0-9]/g, '');
     const isPoseLabel = prediction.className.toLowerCase().includes('pose') && poseNumber >= 1 && poseNumber <= 5;
 
@@ -117,19 +110,19 @@ function checkPose(prediction, video) {
 
         switch(poseNumber) {
             case '1':
-                if (time >= 0.9 && time <= 3.0 && !poseState.triggered) {
+                if (time >= 4.0 && time <= 6.2 && !poseState.triggered) {
                     triggerExplosion(poseState);
                 }
                 break;
             case '2':
-                if (time >= 5.5 && time <= 7.5 && !poseState.triggered) {
+                if (time >= 6.7 && time <= 7.9 && !poseState.triggered) {
                     triggerExplosion(poseState);
                 }
                 break;
             case '3':
-                if ((time >= 11.5 && time <= 13.0 && !poseState.firstWindowTriggered) ||
-                    (time >= 17.5 && time <= 19.5 && !poseState.secondWindowTriggered)) {
-                    if (time <= 13.0) {
+                if ((time >= 9.9 && time <= 10.5 && !poseState.firstWindowTriggered) ||
+                    (time >= 10.5 && time <= 12.5 && !poseState.secondWindowTriggered)) {
+                    if (time <= 10.5) {
                         poseState.firstWindowTriggered = true;
                     } else {
                         poseState.secondWindowTriggered = true;
@@ -140,12 +133,12 @@ function checkPose(prediction, video) {
                 }
                 break;
             case '4':
-                if (time >= 15.5 && time <= 16.6 && !poseState.triggered) {
+                if (time >= 14.0 && time <= 17.0 && !poseState.triggered) {
                     triggerExplosion(poseState);
                 }
                 break;
             case '5':
-                if (time >= 19.5 && !poseState.triggered) {
+                if (time >= 20.0 && !poseState.triggered) {
                     triggerExplosion(poseState);
                 }
                 break;
@@ -192,7 +185,7 @@ async function playInstructionVideo() {
     video.addEventListener('timeupdate', () => {
         const minutes = Math.floor(video.currentTime / 60);
         const seconds = Math.floor(video.currentTime % 60);
-        document.getElementById('videoTime').textContent = 
+        document.getElementById('videoTime').textContent =
             `Time: ${minutes}:${seconds.toString().padStart(2, '0')}`;
     });
 
@@ -230,7 +223,7 @@ async function playInstructionVideo() {
     if (model) {
         processFrame();
     } else {
-        console.log("https://teachablemachine.withgoogle.com/models/CMBhs4EAW/");
+        console.log("https://teachablemachine.withgoogle.com/models/mQlyUbhFo/");
     }
 }
 
@@ -258,6 +251,7 @@ function stopWebcam() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
     }
 }
+
 
 
 
